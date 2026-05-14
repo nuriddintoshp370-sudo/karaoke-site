@@ -3,290 +3,249 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>🎤 Oʻzbekcha Karaokelar</title>
-  <meta name="description" content="Eng yangi o'zbekcha karaoke videolar. Bepul, onlayn, Telegram orqali.">
+  <title>🎤 O'zbekcha Karaokelar</title>
   <style>
     :root {
       --bg: #0a0e17;
       --card: #151e2e;
-      --card-hover: #1e2a3a;
       --text: #f1f5f9;
       --text-dim: #94a3b8;
       --accent: #22d3ee;
-      --accent-hover: #06b6d4;
       --border: #334155;
-      --success: #22c55e;
-      --warning: #f59e0b;
+      --webcraft-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     }
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, -apple-system, sans-serif; }
-    html { scroll-behavior: smooth; }
-    body { 
-      background: linear-gradient(135deg, var(--bg), #0f172a); 
-      color: var(--text); 
-      min-height: 100vh;
-      padding-bottom: 40px;
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', system-ui, sans-serif; }
+    body { background: var(--bg); color: var(--text); min-height: 100vh; }
+
+    /* =============================
+       🎬 WEBCRAFT INTRO
+       ============================= */
+    #intro-screen {
+      position: fixed; inset: 0;
+      background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
+      z-index: 9999;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      overflow: hidden;
     }
-    
-    /* ===== HEADER ===== */
+    #intro-screen.hidden { 
+      opacity: 0; visibility: hidden; pointer-events: none;
+      transition: opacity 0.8s, visibility 0.8s;
+    }
+    .stars { position: absolute; inset: 0; overflow: hidden; }
+    .star {
+      position: absolute; width: 3px; height: 3px;
+      background: white; border-radius: 50%;
+      animation: twinkle 2s ease-in-out infinite;
+    }
+    @keyframes twinkle {
+      0%, 100% { opacity: 0.3; }
+      50% { opacity: 1; }
+    }
+    .intro-content {
+      text-align: center; position: relative; z-index: 10;
+      padding: 20px; animation: fadeInUp 1s ease;
+    }
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(40px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .webcraft-logo {
+      font-size: 4rem; font-weight: 900;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text; margin-bottom: 20px;
+      animation: logoGlow 3s ease-in-out infinite, logoScale 2s ease-in-out infinite;
+      letter-spacing: 4px; text-transform: uppercase;
+    }
+    @keyframes logoGlow {
+      0%, 100% { filter: drop-shadow(0 0 20px rgba(102, 126, 234, 0.6)); }
+      50% { filter: drop-shadow(0 0 40px rgba(118, 75, 162, 0.8)); }
+    }
+    @keyframes logoScale {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+    }
+    .intro-tagline { font-size: 1.2rem; color: var(--text-dim); margin-bottom: 40px; }
+    .loading-bar {
+      width: 300px; height: 6px;
+      background: rgba(255,255,255,0.1);
+      border-radius: 10px; overflow: hidden; margin: 30px auto;
+    }
+    .loading-bar-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #667eea, #764ba2, #f093fb);
+      background-size: 200% 100%; width: 0%;
+      transition: width 0.1s linear;
+      animation: shimmer 2s linear infinite;
+    }
+    @keyframes shimmer {
+      0% { background-position: 200% 0; }
+      100% { background-position: -200% 0; }
+    }
+    .loading-text { color: var(--text-dim); font-size: 0.9rem; margin-bottom: 20px; }
+    .skip-btn {
+      padding: 12px 30px;
+      background: rgba(102, 126, 234, 0.2);
+      border: 2px solid #667eea; color: #667eea;
+      border-radius: 25px; font-weight: 600; cursor: pointer;
+      transition: all 0.3s;
+    }
+    .skip-btn:hover {
+      background: rgba(102, 126, 234, 0.3);
+      transform: translateY(-2px);
+      box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+    }
+
+    /* =============================
+       🏠 ASOSIY SAYT
+       ============================= */
     header {
-      text-align: center;
-      padding: 25px 20px 15px;
-      background: rgba(21, 30, 46, 0.9);
-      backdrop-filter: blur(10px);
-      position: sticky;
-      top: 0;
-      z-index: 100;
+      text-align: center; padding: 20px;
+      background: rgba(21,30,46,0.9);
+      position: sticky; top: 0; z-index: 100;
       border-bottom: 1px solid var(--border);
     }
-    .logo {
-      font-size: 1.8rem;
-      font-weight: 800;
-      background: linear-gradient(90deg, var(--accent), #818cf8);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      margin-bottom: 8px;
-    }
-    .subtitle { color: var(--text-dim); font-size: 0.95rem; margin-bottom: 15px; }
-    
-    /* Search */
-    .search-box {
-      width: 100%;
-      max-width: 500px;
-      margin: 0 auto 10px;
-      position: relative;
-    }
+    .logo { font-size: 1.8rem; font-weight: 800; color: var(--accent); margin-bottom: 10px; }
+    .search-box { max-width: 500px; margin: 0 auto 15px; }
     .search-box input {
-      width: 100%;
-      padding: 12px 16px 12px 40px;
-      border-radius: 10px;
+      width: 100%; padding: 12px; border-radius: 8px;
       border: 1px solid var(--border);
-      background: var(--card);
-      color: white;
-      font-size: 1rem;
-      transition: border-color 0.2s;
+      background: var(--card); color: #fff;
     }
-    .search-box input:focus {
-      outline: none;
-      border-color: var(--accent);
-    }
-    .search-icon {
-      position: absolute;
-      left: 14px;
-      top: 50%;
-      transform: translateY(-50%);
-      color: var(--text-dim);
-    }
-    
-    /* Contact Bar */
-    .contact-bar {
-      display: flex;
-      justify-content: center;
-      gap: 15px;
-      flex-wrap: wrap;
-      margin-top: 10px;
-      font-size: 0.9rem;
-    }
-    .contact-item {
-      display: flex;
-      align-items: center;
-      gap: 5px;
-      color: var(--text-dim);
-      text-decoration: none;
-      transition: color 0.2s;
-    }
-    .contact-item:hover { color: var(--accent); }
-    .contact-item.tg { color: #0088cc; }
-    
-    /* Info Banner */
-    .info-banner {
-      max-width: 600px;
-      margin: 15px auto 0;
-      padding: 10px 15px;
-      background: rgba(34, 197, 94, 0.1);
-      border: 1px solid rgba(34, 197, 94, 0.3);
-      border-radius: 8px;
-      font-size: 0.85rem;
-      color: var(--text-dim);
-      text-align: center;
-    }
-    .info-banner strong { color: var(--success); }
-    
-    /* ===== GRID & CARDS ===== */
+    .contact-bar { display: flex; justify-content: center; gap: 15px; flex-wrap: wrap; }
+    .contact-bar a { color: var(--text-dim); text-decoration: none; }
+    .contact-bar a:hover { color: var(--accent); }
+
     .grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-      gap: 18px;
-      max-width: 1200px;
-      margin: 25px auto 0;
-      padding: 0 15px;
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 18px; max-width: 1200px; margin: 25px auto; padding: 0 15px;
     }
-    
     .card {
-      background: var(--card);
-      border-radius: 14px;
-      overflow: hidden;
-      transition: all 0.25s ease;
-      border: 1px solid transparent;
+      background: var(--card); border-radius: 12px; overflow: hidden;
+      cursor: pointer; border: 1px solid transparent; transition: 0.2s;
     }
     .card:hover {
-      transform: translateY(-5px);
       border-color: var(--accent);
-      box-shadow: 0 10px 30px rgba(34, 211, 238, 0.15);
+      transform: translateY(-4px);
     }
-    
     .preview {
-      width: 100%;
-      aspect-ratio: 16/9;
-      background: linear-gradient(135deg, #1e293b, #0f172a);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      position: relative;
-      overflow: hidden;
-      cursor: pointer;
+      aspect-ratio: 16/9; background: #0f172a;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 3rem; color: var(--accent); cursor: pointer;
     }
-    .preview::before {
-      content: '';
-      position: absolute;
-      width: 100%;
-      height: 100%;
-      background: radial-gradient(circle at 30% 30%, rgba(34,211,238,0.1), transparent 50%);
-    }
-    .play-btn {
-      font-size: 3.5rem;
-      color: var(--accent);
-      opacity: 0.95;
-      text-shadow: 0 2px 10px rgba(0,0,0,0.3);
-      transition: transform 0.2s;
-      z-index: 2;
-    }
-    .card:hover .play-btn { transform: scale(1.1); }
-    
-    .info { padding: 14px 16px 16px; }
-    .title {
-      font-weight: 600;
-      font-size: 1.05rem;
-      margin-bottom: 6px;
-      line-height: 1.3;
-      display: -webkit-box;
-      -webkit-line-clamp: 2;
-      -webkit-box-orient: vertical;
-      overflow: hidden;
-    }
+    .info { padding: 15px; }
+    .title { font-weight: 600; margin-bottom: 6px; }
     .meta {
-      font-size: 0.85rem;
-      color: var(--text-dim);
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 12px;
+      font-size: 0.85rem; color: var(--text-dim);
+      display: flex; justify-content: space-between; margin-bottom: 10px;
     }
-    .tg-badge {
-      background: rgba(0, 136, 204, 0.15);
-      color: #0088cc;
-      padding: 3px 8px;
-      border-radius: 6px;
-      font-size: 0.75rem;
-      font-weight: 500;
-    }
-    
-    /* Two Buttons */
-    .btn-group {
-      display: flex;
-      gap: 8px;
-    }
+    .btn-group { display: flex; gap: 8px; }
     .btn {
-      flex: 1;
-      padding: 9px 12px;
-      border: none;
-      border-radius: 8px;
-      font-size: 0.85rem;
-      font-weight: 500;
-      cursor: pointer;
-      transition: all 0.2s;
-      text-align: center;
+      flex: 1; padding: 8px; border: none; border-radius: 6px;
+      font-weight: 500; cursor: pointer; text-align: center;
       text-decoration: none;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 4px;
     }
-    .btn-site {
-      background: var(--accent);
-      color: #0f172a;
-    }
-    .btn-site:hover { background: var(--accent-hover); }
+    .btn-site { background: var(--accent); color: #000; }
     .btn-tg {
-      background: rgba(0, 136, 204, 0.2);
-      color: #0088cc;
-      border: 1px solid rgba(0, 136, 204, 0.4);
+      background: rgba(0,136,204,0.2); color: #0088cc;
+      border: 1px solid rgba(0,136,204,0.4);
     }
-    .btn-tg:hover { background: rgba(0, 136, 204, 0.3); }
-    
-    /* ===== MODAL ===== */
+
+    /* =============================
+       🎥 MODAL + REKLAMALAR
+       ============================= */
     .modal {
-      display: none;
-      position: fixed;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      background: rgba(0, 0, 0, 0.9);
-      z-index: 1000;
-      align-items: center;
-      justify-content: center;
-      padding: 20px;
-      animation: fadeIn 0.2s ease;
+      display: none; position: fixed; inset: 0;
+      background: rgba(0,0,0,0.95); z-index: 1000;
+      align-items: center; justify-content: center;
+      padding: 20px; overflow-y: auto;
     }
-    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
     .modal.active { display: flex; }
-    
     .modal-content {
-      width: 100%;
-      max-width: 800px;
-      background: var(--card);
-      border-radius: 16px;
+      width: 100%; max-width: 1400px;
+      background: var(--card); border-radius: 14px;
       overflow: hidden;
-      position: relative;
-      box-shadow: 0 25px 50px rgba(0, 0, 0, 0.6);
     }
     .modal-header {
       padding: 12px 16px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
+      display: flex; justify-content: space-between; align-items: center;
       border-bottom: 1px solid var(--border);
-      background: rgba(21, 30, 46, 0.95);
-    }
-    .modal-title {
-      font-weight: 600;
-      font-size: 1.1rem;
-      max-width: 85%;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
     }
     .close {
-      background: rgba(255,255,255,0.1);
-      color: white;
-      border: none;
-      width: 36px; height: 36px;
-      border-radius: 50%;
-      font-size: 1.3rem;
-      cursor: pointer;
+      background: rgba(255,255,255,0.1); color: #fff;
+      border: none; width: 32px; height: 32px;
+      border-radius: 50%; cursor: pointer; font-size: 1.2rem;
+    }
+    
+    /* Video va reklamalar konteyneri */
+    .modal-body {
+      display: grid;
+      grid-template-columns: 1fr 2fr 1fr;
+      gap: 15px;
+      padding: 15px;
+      min-height: 500px;
+    }
+    
+    /* Reklama bloklari */
+    .ad-side {
+      background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+      border-radius: 12px;
+      padding: 15px;
       display: flex;
+      flex-direction: column;
       align-items: center;
       justify-content: center;
-      transition: background 0.2s;
+      cursor: pointer;
+      transition: transform 0.3s, box-shadow 0.3s;
+      border: 2px solid transparent;
+      min-height: 400px;
     }
-    .close:hover { background: rgba(255,255,255,0.25); }
+    .ad-side:hover {
+      transform: translateY(-5px);
+      border-color: var(--accent);
+      box-shadow: 0 10px 30px rgba(34, 211, 238, 0.3);
+    }
+    .ad-side-content {
+      text-align: center;
+    }
+    .ad-side-logo {
+      font-size: 1.8rem;
+      font-weight: 900;
+      background: var(--webcraft-gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 10px;
+      letter-spacing: 2px;
+    }
+    .ad-side-text {
+      color: var(--text-dim);
+      font-size: 0.95rem;
+      line-height: 1.5;
+    }
+    .ad-side-badge {
+      margin-top: 15px;
+      padding: 6px 15px;
+      background: rgba(102, 126, 234, 0.2);
+      border: 1px solid #667eea;
+      border-radius: 20px;
+      color: #667eea;
+      font-size: 0.85rem;
+      font-weight: 600;
+    }
     
+    /* Video o'rtada */
+    .video-container {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
     .player-wrapper {
       position: relative;
       padding-bottom: 56.25%;
-      height: 0;
       background: #000;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      border-radius: 12px;
+      overflow: hidden;
     }
     .player-wrapper iframe {
       position: absolute;
@@ -294,378 +253,269 @@
       width: 100%; height: 100%;
       border: none;
     }
-    .player-placeholder {
-      color: var(--text-dim);
-      text-align: center;
-      padding: 20px;
-    }
-    .player-placeholder .loading {
-      display: inline-block;
-      width: 24px; height: 24px;
-      border: 3px solid rgba(34,211,238,0.3);
-      border-radius: 50%;
-      border-top-color: var(--accent);
-      animation: spin 0.8s linear infinite;
-      margin-bottom: 10px;
-    }
-    @keyframes spin { to { transform: rotate(360deg); } }
-    
     .modal-footer {
       padding: 12px 16px;
       display: flex;
-      justify-content: space-between;
-      align-items: center;
+      justify-content: space-between; align-items: center;
       border-top: 1px solid var(--border);
-      background: rgba(21, 30, 46, 0.95);
-      font-size: 0.9rem;
-      flex-wrap: wrap;
-      gap: 8px;
+      background: rgba(21, 30, 46, 0.5);
     }
-    .modal-footer span { color: var(--text-dim); }
     .open-tg {
-      color: #0088cc;
-      text-decoration: none;
+      color: #0088cc; text-decoration: none;
       font-weight: 500;
-      display: flex;
-      align-items: center;
-      gap: 5px;
-      transition: opacity 0.2s;
     }
-    .open-tg:hover { opacity: 0.85; }
-    
-    /* ===== EMPTY STATE ===== */
-    .empty {
-      text-align: center;
-      padding: 50px 20px;
-      color: var(--text-dim);
-      max-width: 500px;
-      margin: 0 auto;
-      grid-column: 1 / -1;
-    }
-    .empty-icon { font-size: 3.5rem; margin-bottom: 12px; opacity: 0.4; }
-    .empty p { line-height: 1.5; }
-    
-    /* ===== FOOTER ===== */
+
     footer {
-      text-align: center;
-      margin-top: 50px;
-      padding: 25px 20px;
-      color: var(--text-dim);
-      font-size: 0.85rem;
-      border-top: 1px solid var(--border);
-      max-width: 1200px;
-      margin-left: auto;
-      margin-right: auto;
+      text-align: center; padding: 30px 20px;
+      color: var(--text-dim); font-size: 0.9rem;
+      border-top: 1px solid var(--border); margin-top: 40px;
     }
     footer a { color: var(--accent); text-decoration: none; }
-    footer a:hover { text-decoration: underline; }
-    
-    /* ===== RESPONSIVE ===== */
+
+    /* Mobil uchun */
+    @media (max-width: 1024px) {
+      .modal-body {
+        grid-template-columns: 1fr;
+      }
+      .ad-side {
+        min-height: 150px;
+        flex-direction: row;
+        gap: 20px;
+      }
+      .webcraft-logo { font-size: 2.5rem; }
+      .grid { grid-template-columns: 1fr; }
+    }
     @media (max-width: 600px) {
-      .logo { font-size: 1.5rem; }
-      .grid { grid-template-columns: 1fr; padding: 0 12px; }
-      .modal-title { font-size: 1rem; }
-      .btn-group { flex-direction: column; }
-      .modal-footer { flex-direction: column; text-align: center; }
-    }
-    
-    /* ===== ACCESSIBILITY ===== */
-    .card:focus-within, .btn:focus, .close:focus {
-      outline: 2px solid var(--accent);
-      outline-offset: 2px;
-    }
-    @media (prefers-reduced-motion: reduce) {
-      * { animation: none !important; transition: none !important; }
+      .ad-side {
+        flex-direction: column;
+        min-height: 200px;
+      }
     }
   </style>
 </head>
 <body>
 
-<!-- ===== HEADER ===== -->
+<!-- 🎬 WEBCRAFT INTRO -->
+<div id="intro-screen">
+  <div class="stars" id="stars"></div>
+  <div class="intro-content">
+    <div class="webcraft-logo">WEBCRAFT</div>
+    <p class="intro-tagline">Professional Web Yechimlar</p>
+    <div class="loading-bar">
+      <div class="loading-bar-fill" id="intro-progress"></div>
+    </div>
+    <p class="loading-text">Sayt yuklanmoqda...</p>
+    <button class="skip-btn" onclick="skipIntro(event)">O'tkazib yuborish</button>
+  </div>
+</div>
+
+<!-- HEADER -->
 <header>
-  <div class="logo">🎤 Oʻzbekcha Karaokelar</div>
-  <div class="subtitle">Eng yangi karaoke videolar — bepul va onlayn</div>
-  
+  <div class="logo">🎤 O'zbekcha Karaokelar</div>
   <div class="search-box">
-    <span class="search-icon">🔍</span>
-    <input type="text" id="search" placeholder="Qoʻshiq yoki ijrochi qidiring..." aria-label="Qidiruv">
+    <input type="text" id="search" placeholder="Qoʻshiq yoki ijrochi qidiring...">
   </div>
-  
   <div class="contact-bar">
-    <a href="tel:+998953210091" class="contact-item">📞 +998 95 321 00 91</a>
-    <a href="https://t.me/uzbkaraokelar" target="_blank" class="contact-item tg">📱 @uzbkaraokelar</a>
-  </div>
-  
-  <div class="info-banner">
-    💡 <strong>Maslahat:</strong> Video ochilmasa, "Telegram'da ochish" tugmasini bosing yoki brauzerda "Ilovalarni ochish"ga ruxsat bering.
+    <a href="tel:+998953210091">📞 +998 95 321 00 91</a>
+    <a href="https://t.me/uzbkaraokelar" target="_blank">📱 @uzbkaraokelar</a>
   </div>
 </header>
 
-<!-- ===== VIDEO GRID ===== -->
-<main class="grid" id="videoGrid" role="list">
-  <!-- Videolar JavaScript orqali yuklanadi -->
-</main>
+<!-- VIDEO GRID -->
+<main class="grid" id="videoGrid"></main>
 
-<!-- ===== MODAL PLAYER ===== -->
-<div class="modal" id="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+<!-- MODAL: REKLAMALAR + VIDEO -->
+<div class="modal" id="modal">
   <div class="modal-content">
     <div class="modal-header">
-      <div class="modal-title" id="modalTitle">Video yuklanmoqda...</div>
-      <button class="close" onclick="closeModal()" aria-label="Yopish">✕</button>
-    </div>
-    <div class="player-wrapper" id="playerWrapper">
-      <div class="player-placeholder" id="playerPlaceholder">
-        <div class="loading"></div>
-        <p>Video yuklanmoqda, kuting...</p>
-        <p style="font-size:0.85rem;margin-top:8px;color:var(--text-dim)">
-          Agar ochilmasa, quyidagi tugmani bosing ↓
-        </p>
+      <div id="modalTitle" style="font-weight:600; max-width:85%; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">
+        Video yuklanmoqda...
       </div>
-      <iframe id="player" src="" allow="autoplay; encrypted-media; fullscreen" allowfullscreen loading="lazy" title="Karaoke video"></iframe>
+      <button class="close" onclick="closeModal()">✕</button>
     </div>
+
+    <div class="modal-body">
+      <!-- CHAP REKLAMA -->
+      <div class="ad-side" onclick="openAdLink('left')">
+        <div class="ad-side-content">
+          <div class="ad-side-logo">WEBCRAFT</div>
+          <p class="ad-side-text">
+            Professional saytlar yaratamiz!<br>
+            Telegram kanalimizga obuna bo'ling
+          </p>
+          <div class="ad-side-badge">Batafsil →</div>
+        </div>
+      </div>
+
+      <!-- VIDEO (O'RTADA) -->
+      <div class="video-container">
+        <div class="player-wrapper">
+          <iframe id="player" src="" allow="autoplay; encrypted-media; fullscreen" allowfullscreen loading="lazy"></iframe>
+        </div>
+      </div>
+
+      <!-- O'NG REKLAMA -->
+      <div class="ad-side" onclick="openAdLink('right')">
+        <div class="ad-side-content">
+          <div class="ad-side-logo">WEBCRAFT</div>
+          <p class="ad-side-text">
+            Web dasturlash va dizayn<br>
+            Sifatli va tezkor xizmat
+          </p>
+          <div class="ad-side-badge">Bog'lanish →</div>
+        </div>
+      </div>
+    </div>
+
     <div class="modal-footer">
-      <span>🔗 Telegram orqali</span>
-      <a id="openTg" class="open-tg" href="#" target="_blank" rel="noopener">
-        📱 Toʻliq Telegram'da ochish →
-      </a>
+      <span style="color:var(--text-dim)">Telegram orqali</span>
+      <a id="openTg" class="open-tg" href="#" target="_blank">📱 To'liq ochish →</a>
     </div>
   </div>
 </div>
 
-<!-- ===== FOOTER ===== -->
+<!-- FOOTER -->
 <footer>
-  🎵 Oʻzbekcha Karaokelar © 2026 • Barcha huquqlar himoyalangan<br>
-  Savollar uchun: 📞 <a href="tel:+998953210091">+998 95 321 00 91</a> | 📱 <a href="https://t.me/uzbkaraokelar">@uzbkaraokelar</a><br>
-  <span style="color:var(--text-dim);font-size:0.8rem">Sayt <a href="https://pages.github.com" target="_blank">GitHub Pages</a> da bepul joylashtirilgan</span>
+  🎵 O'zbekcha Karaokelar © 2026 • 
+  <a href="tel:+998953210091">+998 95 321 00 91</a> | 
+  <a href="https://t.me/uzbkaraokelar">@uzbkaraokelar</a><br>
+  <span style="color:var(--text-dim);font-size:0.8rem">
+    Developed by <strong style="color:#667eea">WEBCRAFT</strong>
+  </span>
 </footer>
 
-<!-- ===== JAVASCRIPT ===== -->
 <script>
   // =============================
-  // 🎵 VIDEOLAR RO'YXATI
-  // Format: { title: "Nomi", artist: "Ijrochi", date: "YYYY-MM-DD", tg: "https://t.me/kanal/post_id" }
-  // Yangi qo'shish: Quyidagi massivga yangi ob'ekt qo'shing
+  // ⚙️ SOZLAMALAR
+  // =============================
+  const CONFIG = {
+    introDuration: 7000,
+    introLink: 'https://t.me/webcraftuzz',
+    adLink: 'https://t.me/webcraftuzz',
+  };
+
+  // =============================
+  // 🎬 INTRO (Yulduzlar)
+  // =============================
+  const starsContainer = document.getElementById('stars');
+  for (let i = 0; i < 50; i++) {
+    const star = document.createElement('div');
+    star.className = 'star';
+    star.style.left = Math.random() * 100 + '%';
+    star.style.top = Math.random() * 100 + '%';
+    star.style.animationDelay = Math.random() * 2 + 's';
+    starsContainer.appendChild(star);
+  }
+
+  let introTimer, progressInterval;
+  const introScreen = document.getElementById('intro-screen');
+  const progressBar = document.getElementById('intro-progress');
+
+  function startIntro() {
+    let elapsed = 0;
+    const step = 50;
+    progressInterval = setInterval(() => {
+      elapsed += step;
+      const percent = Math.min((elapsed / CONFIG.introDuration) * 100, 100);
+      progressBar.style.width = percent + '%';
+    }, step);
+    introTimer = setTimeout(() => hideIntro(), CONFIG.introDuration);
+  }
+
+  function hideIntro() {
+    clearInterval(progressInterval);
+    clearTimeout(introTimer);
+    introScreen.classList.add('hidden');
+    setTimeout(() => { introScreen.style.display = 'none'; }, 800);
+  }
+
+  function skipIntro(e) {
+    e.stopPropagation();
+    hideIntro();
+  }
+
+  introScreen.onclick = () => {
+    window.open(CONFIG.introLink, '_blank');
+  };
+
+  // =============================
+  // 🎵 VIDEOLAR
   // =============================
   const videos = [
-    {
-      title: "Yangi karaoke #3188",
-      artist: "O'zbekcha hitlar",
-      date: "2026-05-14",
-      tg: "https://t.me/uzbkaraokelar/3188"
-    },
-    {
-      title: "Karaoke video #3187",
-      artist: "Mashhur qo'shiqlar",
-      date: "2026-05-14",
-      tg: "https://t.me/uzbkaraokelar/3187"
-    },
-    {
-      title: "Karaoke to'plam #3184",
-      artist: "O'zbekcha repertuar",
-      date: "2026-05-13",
-      tg: "https://t.me/uzbkaraokelar/3184"
-    },
-    {
-      title: "Karaoke xit #3182",
-      artist: "Eng zo'r taronalar",
-      date: "2026-05-13",
-      tg: "https://t.me/uzbkaraokelar/3182"
-    },
-    // 👇 YANGI VIDEO QO'SHISH UCHUN SHU YERGA QO'SHING:
-    // { title: "Qo'shiq nomi", artist: "Ijrochi", date: "2026-01-01", tg: "https://t.me/uzbkaraokelar/XXXX" },
+    { title: "Yangi karaoke #3188", artist: "O'zbekcha hitlar", date: "2026-05-14", tg: "https://t.me/uzbkaraokelar/3188" },
+    { title: "Karaoke video #3187", artist: "Mashhur qo'shiqlar", date: "2026-05-14", tg: "https://t.me/uzbkaraokelar/3187" },
+    { title: "Karaoke to'plam #3184", artist: "O'zbekcha repertuar", date: "2026-05-13", tg: "https://t.me/uzbkaraokelar/3184" },
+    { title: "Karaoke xit #3182", artist: "Eng zo'r taronalar", date: "2026-05-13", tg: "https://t.me/uzbkaraokelar/3182" },
   ];
 
   // =============================
-  // ⚙️ ASOSIY O'ZGARUVCHILAR
+  // ⚙️ ASOSIY FUNKSIYALAR
   // =============================
   const grid = document.getElementById('videoGrid');
   const modal = document.getElementById('modal');
   const player = document.getElementById('player');
-  const playerWrapper = document.getElementById('playerWrapper');
-  const playerPlaceholder = document.getElementById('playerPlaceholder');
   const modalTitle = document.getElementById('modalTitle');
   const openTg = document.getElementById('openTg');
   const searchInput = document.getElementById('search');
 
-  // Qurilma tipini aniqlash
-  const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
-  const isTelegramApp = navigator.userAgent.toLowerCase().includes('telegram');
-
-  // =============================
-  // 🎬 VIDEOLARNI CHIQARISH FUNKSIYASI
-  // =============================
   function renderVideos(list) {
     grid.innerHTML = '';
-    
     if (list.length === 0) {
-      grid.innerHTML = `
-        <div class="empty">
-          <div class="empty-icon">🔍</div>
-          <p><strong>Hech narsa topilmadi.</strong><br>Boshqa so'z bilan qidirib ko'ring yoki ro'yxatni yangilang.</p>
-        </div>
-      `;
+      grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:40px;color:var(--text-dim)">🔍 Hech narsa topilmadi</div>';
       return;
     }
-    
-    list.forEach((v, index) => {
-      const postId = v.tg.split('/').pop();
-      const card = document.createElement('article');
+    list.forEach(v => {
+      const card = document.createElement('div');
       card.className = 'card';
-      card.setAttribute('tabindex', '0');
-      card.setAttribute('role', 'listitem');
-      card.setAttribute('aria-label', `${v.title} — ${v.artist}`);
-      
       card.innerHTML = `
-        <div class="preview" role="button" aria-label="${v.title} ni ochish">
-          <span class="play-btn" aria-hidden="true">▶</span>
-        </div>
+        <div class="preview">▶</div>
         <div class="info">
-          <div class="title">${escapeHtml(v.title)}</div>
+          <div class="title">${v.title}</div>
           <div class="meta">
-            <span>${escapeHtml(v.artist)}</span>
-            <span class="tg-badge">#${postId}</span>
+            <span>${v.artist}</span>
+            <span style="color:#0088cc">#${v.tg.split('/').pop()}</span>
           </div>
           <div class="btn-group">
-            <button class="btn btn-site" onclick="playInSite('${v.tg}', '${escapeHtml(v.title)}')" aria-label="Saytda ko'rish">
-              ▶ Saytda
-            </button>
-            <a href="${v.tg}" target="_blank" rel="noopener" class="btn btn-tg" aria-label="Telegram'da ochish">
-              📱 TG
-            </a>
+            <button class="btn btn-site" onclick="playVideo('${v.tg}','${v.title}')">▶ Saytda</button>
+            <a href="${v.tg}" target="_blank" class="btn btn-tg">📱 TG</a>
           </div>
-        </div>
-      `;
-      
-      // Card click - preview bosilganda
-      card.querySelector('.preview').onclick = (e) => {
-        e.stopPropagation();
-        playInSite(v.tg, v.title);
-      };
-      
-      // Keyboard accessibility
-      card.onkeydown = (e) => {
-        if (e.key === 'Enter' || e.key === ' ') {
-          e.preventDefault();
-          playInSite(v.tg, v.title);
-        }
-      };
-      
+        </div>`;
+      card.querySelector('.preview').onclick = (e) => { e.stopPropagation(); playVideo(v.tg, v.title); };
       grid.appendChild(card);
     });
   }
 
-  // =============================
-  // 🎥 SAYTDA O'YNATISH (HYBRID YECHIM)
-  // =============================
-  function playInSite(tgLink, title) {
+  function playVideo(tgLink, title) {
     modalTitle.textContent = title;
     openTg.href = tgLink;
-    
-    // Placeholder ko'rsatish
-    playerPlaceholder.style.display = 'flex';
-    player.style.display = 'none';
-    
-    // Embed URL yaratish (Telegram rasmiy formati)
-    const embedUrl = `https://telegram.org/embed?post=${encodeURIComponent(tgLink)}&mode=dark`;
-    
-    // Mobil qurilmalarda ogohlantirish
-    if (isMobile && !isTelegramApp) {
-      setTimeout(() => {
-        if (confirm(`📱 Mobil qurilmada video ochilmasligi mumkin.\n\n"OK" — Telegram ilovasida ochish\n"Cancel" — Saytda urinish`)) {
-          window.open(tgLink, '_blank');
-          closeModal();
-        } else {
-          loadEmbed(embedUrl);
-        }
-      }, 1500);
-    } else {
-      loadEmbed(embedUrl);
-    }
-    
+    player.src = `https://telegram.org/embed?post=${encodeURIComponent(tgLink)}&mode=dark`;
     modal.classList.add('active');
     document.body.style.overflow = 'hidden';
   }
 
-  // Embedni yuklash
-  function loadEmbed(url) {
-    playerPlaceholder.style.display = 'none';
-    player.style.display = 'block';
-    player.src = url;
-    
-    // Xatolikni ushlash (iframe yuklanmasa)
-    player.onerror = () => {
-      playerPlaceholder.innerHTML = `
-        <p style="color:var(--warning)">⚠️ Video ochilmadi</p>
-        <p style="font-size:0.85rem;margin-top:5px">Telegram cheklovi tufayli ba'zi qurilmalarda ishlamasligi mumkin.</p>
-        <a href="${openTg.href}" target="_blank" class="btn btn-tg" style="margin-top:12px">
-          📱 Telegram'da ochish
-        </a>
-      `;
-      playerPlaceholder.style.display = 'flex';
-      player.style.display = 'none';
-    };
-  }
-
-  // =============================
-  // ❌ MODALNI YOPISH
-  // =============================
   function closeModal() {
     modal.classList.remove('active');
-    player.src = ''; // Videoni to'xtatish
-    playerPlaceholder.style.display = 'flex';
-    player.style.display = 'none';
+    player.src = '';
     document.body.style.overflow = '';
   }
 
-  // Modal tashqarisiga bosganda yopish
-  modal.addEventListener('click', (e) => {
-    if (e.target === modal) closeModal();
-  });
-
-  // ESC tugmasi
-  document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && modal.classList.contains('active')) {
-      closeModal();
-    }
-  });
-
-  // =============================
-  // 🔍 QIDIRUV FUNKSIYASI
-  // =============================
-  searchInput.addEventListener('input', (e) => {
-    const query = e.target.value.toLowerCase().trim();
-    if (!query) {
-      renderVideos(videos);
-      return;
-    }
-    const filtered = videos.filter(v => 
-      v.title.toLowerCase().includes(query) || 
-      v.artist.toLowerCase().includes(query)
-    );
-    renderVideos(filtered);
-  });
-
-  // =============================
-  // 🛡️ XSS HIMAYASI
-  // =============================
-  function escapeHtml(text) {
-    const div = document.createElement('div');
-    div.textContent = text;
-    return div.innerHTML;
+  function openAdLink(position) {
+    window.open(CONFIG.adLink, '_blank');
   }
 
-  // =============================
-  // 🚀 DASTLABKI YUKLASH
-  // =============================
-  document.addEventListener('DOMContentLoaded', () => {
-    renderVideos(videos);
-    
-    // Konsolga yo'riqnoma
-    console.log('🎤 Oʻzbekcha Karaokelar sayti yuklandi!');
-    console.log('✨ Yangi video qo\'shish: videos massiviga yangi ob\'ekt qo\'shing');
-    console.log('🌐 Sayt manzili: https://SIZNING_NICKINGIZ.github.io/karaoke-site');
-  });
-</script>
+  modal.onclick = (e) => { if(e.target === modal) closeModal(); };
+  document.onkeydown = (e) => { if(e.key === 'Escape') closeModal(); };
 
+  searchInput.oninput = (e) => {
+    const q = e.target.value.toLowerCase();
+    renderVideos(q ? videos.filter(v => 
+      v.title.toLowerCase().includes(q) || v.artist.toLowerCase().includes(q)
+    ) : videos);
+  };
+
+  // Ishga tushirish
+  renderVideos(videos);
+  startIntro();
+</script>
 </body>
 </html>
